@@ -1,0 +1,39 @@
+Vagrant.configure("2") do |config|
+config.vm.box = "bento/ubuntu-18.04"
+config.vm.synced_folder "../Cloud/Shared", "/home/vagrant/Shared", create:true
+config.puppet_install.puppet_version = '6.24.0'
+
+  config.vm.provision :puppet do |puppet|
+    puppet.environment_path = "../Cloud/environments"
+    puppet.environment = "test"
+  end
+
+def digital_ocean_config(provider, override)
+  override.ssh.private_key_path = '~/.ssh/id_rsa'
+  override.vm.box = 'digital_ocean'
+  override.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+  override.vm.allowed_synced_folder_types = :rsync
+  provider.token = 'da5132d871340a1bc2ab4c7d111b04edd395667ebdf592cd9615cf141dc6c1db'  # Remember to set the environment variable DIGITALOCEAN-TOKEN before running
+  provider.image = 'ubuntu-18-04-x64'
+  provider.region = 'nyc1'
+  provider.size = 's-1vcpu-1gb'
+  provider.setup = false
+end
+
+
+config.vm.define "appserver" do |app|
+app.vm.hostname = 'appserver'
+app.vm.provider :digital_ocean do |provider, override|
+digital_ocean_config provider, override
+  end
+  end
+
+config.vm.define "dbserver" do |db|
+db.vm.hostname = 'dbserver'
+db.vm.provider :digital_ocean do |provider, override|
+digital_ocean_config provider, override
+
+end
+end
+
+end
