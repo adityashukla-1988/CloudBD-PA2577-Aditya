@@ -13,7 +13,7 @@ def digital_ocean_config(provider, override)
   override.vm.box = 'digital_ocean'
   override.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
   override.vm.allowed_synced_folder_types = :rsync
-  provider.token = 'da5132d871340a1bc2ab4c7d111b04edd395667ebdf592cd9615cf141dc6c1db'  # Remember to set the environment variable DIGITALOCEAN-TOKEN before running
+  provider.token = ENV['token']  # Remember to set the environment variable DIGITALOCEAN-TOKEN before running
   provider.image = 'ubuntu-18-04-x64'
   provider.region = 'nyc1'
   provider.size = 's-1vcpu-1gb'
